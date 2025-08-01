@@ -24,14 +24,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t bookstore-api:test .
+          docker build -t docker-pipeline-demo:latest .
 
-      - name: Save image as tarball
+      - name: Save image as docker-pipeline-demo-image
         run: |
-          docker save bookstore-api:test -o bookstore-api.tar
+          docker save docker-pipeline-demo:latest -o docker-pipeline-demo.tar
 
       - name: Upload image tarball as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bookstore-api-image
-          path: bookstore-api.tar
+          name: docker-pipeline-demo-image
+          path: docker-pipeline-demo.tar
