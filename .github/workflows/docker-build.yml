@@ -1,0 +1,37 @@
+name: Build and Export Docker Image
+
+on:
+  push:
+    branches:
+      - main  # or your testing branch
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to DockerHub (optional)
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t bookstore-api:test .
+
+      - name: Save image as tarball
+        run: |
+          docker save bookstore-api:test -o bookstore-api.tar
+
+      - name: Upload image tarball as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookstore-api-image
+          path: bookstore-api.tar

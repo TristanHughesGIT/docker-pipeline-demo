@@ -1,23 +1,36 @@
-# Use a Python version that has prebuilt wheels for common libs
-FROM python:3.12-slim
+# Use official Python slim image
+FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+# Set environment variables for app config
+ENV DATABASE_URL="sqlite:///./db/books.db" \
+    LOG_LEVEL="INFO" \
+    LOG_FORMAT="%(levelname)s:%(name)s:%(message)s" \
+    PAGE_SIZE=10 \
+    APP_ENV="dev" \
+    HOST="0.0.0.0" \
+    PORT=8080 \
+    RELOAD=False \
+    ALLOWED_ORIGINS="*" \
+    DB_POOL_SIZE=5 \
+    DB_MAX_OVERFLOW=10
 
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install deps first for better cache
+# Copy dependency file first to leverage Docker cache
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copy the app code
-COPY main.py .
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose your API port (choose one and keep it consistent)
+# Copy the rest of the application code
+COPY . .
+
+# Create the db directory (if not using docker volume mount)
+RUN mkdir -p /app/db
+
+# Expose the port used by Uvicorn
 EXPOSE 8080
 
-# If FastAPI (recommended)
+# Start the FastAPI app using Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
-
-# If you're actually using Flask instead, swap the CMD to:
-# CMD ["python", "main.py"]
