@@ -36,7 +36,7 @@ jobs:
 
       - name: Package Helm Chart
         env:
-          CHART_DIR: ./bookstore-api-chart/chart.yaml
+          CHART_DIR: ./bookstore-api-chart
         run: |
           helm lint $CHART_DIR
           helm package $CHART_DIR --destination packaged
