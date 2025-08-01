@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   build-push-helm:
     runs-on: ubuntu-latest
@@ -24,8 +24,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t $IMAGE_NAME:latest .
-          docker tag $IMAGE_NAME:latest $IMAGE_NAME:${{ github.sha }}
+          docker build -t docker-pipeline-demo:latest .
+          docker tag docker-pipeline-demo:latest docker-pipeline-demo:${{ github.sha }}
 
       - name: Push Docker Image
         run: |
