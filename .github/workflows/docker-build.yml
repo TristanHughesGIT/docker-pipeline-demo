@@ -4,11 +4,7 @@ on:
   push:
     branches:
       - main
-
-env:
-  IMAGE_NAME: docker-pipeline-demo
-  CHART_DIR: bookstore-api-chart
-
+      
 jobs:
   build-push-helm:
     runs-on: ubuntu-latest
@@ -33,8 +29,8 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/docker-pipeline-demo:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/docker-pipeline-demo:${{ github.sha }}
 
       - name: Set up Helm
         uses: azure/setup-helm@v3
