@@ -22,16 +22,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Build the Docker image
         run: |
           docker build -t docker-pipeline-demo:latest .
+          docker tag docker-pipeline-demo:latest ${{ secrets.DOCKER_USERNAME }}/docker-pipeline-demo:latest
 
-      - name: Save image as docker-pipeline-demo-image
+      - name: Push the image to Docker Hub
         run: |
-          docker save docker-pipeline-demo:latest -o docker-pipeline-demo.tar
-
-      - name: Upload image tarball as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-pipeline-demo-image
-          path: docker-pipeline-demo.tar
+          docker push ${{ secrets.DOCKER_USERNAME }}/docker-pipeline-demo:latest
